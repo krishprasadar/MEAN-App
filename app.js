@@ -12,8 +12,9 @@ var db;
 MongoClient.connect("mongodb://krishprasadar:mlabdb@ds033076.mlab.com:33076/kpsample", (err, database) => {
     if (err) return console.log(err);
     db = database;
-    app.listen(4000, function () {
-        console.log("Listening on port 4000");
+    var port = process.env.PORT || 4000;
+    app.listen(process.env.PORT || 4000, function () {
+        console.log("Listening on port" port);
     })
 });
 
