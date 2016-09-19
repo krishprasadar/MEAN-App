@@ -14,7 +14,7 @@ MongoClient.connect("mongodb://krishprasadar:mlabdb@ds033076.mlab.com:33076/kpsa
     db = database;
     var port = process.env.PORT || 4000;
     app.listen(process.env.PORT || 4000, function () {
-        console.log("Listening on port" port);
+        console.log("Listening on port" + port);
     })
 });
 
