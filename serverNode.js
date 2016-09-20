@@ -13,13 +13,9 @@ MongoClient.connect("mongodb://krishprasadar:mlabdb@ds033076.mlab.com:33076/kpsa
     if (err) return console.log(err);
     db = database;
     var port = process.env.PORT || 4000;
-    app.listen(process.env.PORT || 4000, function () {
-        console.log("Listening on port" + port);
+    app.listen(port, function () {
+        console.log("Listening on port: " + port);
     })
-});
-
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/views/index.html'); // load the single view file (angular will handle the page changes on the front-end)
 });
 
 app.post('/app/addTodo', (req, res) => {
@@ -40,8 +36,6 @@ app.post('/app/addTodo', (req, res) => {
 
 app.post('/app/deleteTodo', (req, res) => {
     var del = {_id: mongodb.ObjectID(req.body._id)};
-    //Testing delete failures
-    //var del = {_id: mongodb.ObjectID("57e045150dbe5f482d062ef1")};
 
     db.collection('todos').deleteOne(del, (err, result) => {
         if (err) return res.status(500).send(err);
@@ -88,6 +82,9 @@ app.post('/app/updateTodo', (req, res) => {
     })
 });
 
+app.get('*', (req, res) => {
+    res.sendFile(__dirname + '/index.html'); // load the single view file (angular will handle the page changes on the front-end)
+});
 
 
 

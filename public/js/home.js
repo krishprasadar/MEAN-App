@@ -1,10 +1,36 @@
-var angApp = angular.module('angApp', []);
+var angApp = angular.module('angApp', ['ngRoute']);
+
+angApp.config(['$routeProvider', function ($routeProvider) {
+
+    $routeProvider
+        .when('/', {
+            templateUrl: '/static/views/home.html',
+            controller: 'mainController'
+        })
+        .when('/doc', {
+            templateUrl: '/static/views/doc.html',
+            controller: 'mainController'
+        })
+        .when('/contact', {
+            templateUrl: '/static/views/contact.html',
+            controller: 'mainController'
+        }).
+        otherwise({
+            template : "<h1>Oops! Page not found</h1>"
+        });
+
+}]);
 
 angApp.controller('mainController', function ($scope, $http) {
     $scope.formData = {};
+    $scope.config = {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    };
 
     $scope.initialize = function () {
-        $.notify.defaults({ className: "success" });
+        $.notify.defaults({className: "success"});
         $scope.getTodos();
     };
 
@@ -24,10 +50,11 @@ angApp.controller('mainController', function ($scope, $http) {
     $scope.createTodo = function () {
         console.log($scope.formData.name);
 
-        var filteredTodo = $scope.todos.filter(function(todo){return todo.name == $scope.formData.name});
-        if(filteredTodo.length  > 0)
-        {
-            $("#todoInputArea").notify("Todo already exists", { position:"bottom", className: "info"});
+        var filteredTodo = $scope.todos.filter(function (todo) {
+            return todo.name == $scope.formData.name
+        });
+        if (filteredTodo.length > 0) {
+            $("#todoInputArea").notify("Todo already exists", {position: "bottom", className: "info"});
             return;
         }
 
@@ -42,14 +69,14 @@ angApp.controller('mainController', function ($scope, $http) {
             completed: false
         })
 
-        var create = $http.post('/app/addTodo', todo, config)
+        var create = $http.post('/app/addTodo', todo, $scope.config)
             .success(function (data) {
                 $scope.formData = {}; // clear the form so our user is ready to enter another
-                $('#submit').notify("Todo created", { position:"right"});
+                $('#submit').notify("Todo created", {position: "right"});
             })
             .error(function (data) {
                 console.log('Error: ' + data);
-                $('#submit').notify("Todo creation failed. Please try again", { position:"right", className:"error"  });
+                $('#submit').notify("Todo creation failed. Please try again", {position: "right", className: "error"});
             })
         create.then($scope.getTodos());
 
@@ -69,15 +96,13 @@ angApp.controller('mainController', function ($scope, $http) {
             _id: todo._id
         });
 
-        var del = $http.post('/app/deleteTodo', data, config)
+        var del = $http.post('/app/deleteTodo', data, $scope.config)
             .success(function (data) {
-                console.log("Delete success " + data);
-                $('#deleteIcon').notify("Todo deleted", { position:"bottom center"});
+                $.notify("Todo deleted", {position: "bottom center"});
 
             })
             .error(function (error) {
-                console.log("Error deleting todo. Try again");
-                $.notify("Todo deletion failed. Please try again", { position:"bottom center", className:"error"  });
+                $.notify("Todo deletion failed. Please try again", {position: "bottom center", className: "error"});
             })
             .catch(function (error) {
                 console.log(error.statusText);
@@ -86,8 +111,8 @@ angApp.controller('mainController', function ($scope, $http) {
     };
 
     //For both false and true
-    $scope.setCompleted = function(isCompleted, todo)
-    {
+    $scope.setCompleted = function (isCompleted, todo) {
+
         var config = {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -99,17 +124,18 @@ angApp.controller('mainController', function ($scope, $http) {
             completed: isCompleted
         });
 
-        var updateTodo = $http.post('/app/updateTodo',data, config)
+        var updateTodo = $http.post('/app/updateTodo', data, $scope.config)
             .success(function (data) {
-                console.log(data);
+                $.notify("Todo status changed!", {position: "bottom center", className: "info"});
             })
             .error(function (error) {
-                console.log(data);
+                $.notify("Todo update failed. Please try again", {position: "bottom center", className: "error"});
             })
             .catch(function (error) {
                 console.log(error.statusText);
             });
         updateTodo.then($scope.getTodos());
+
     }
 
 });

@@ -1,0 +1,45 @@
+<h1>Your list of Todos</h1>
+<div class="panel-group">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a href="#">Todos <span class="badge">{{(todos | filter:{completed:false}).length}}</span></a>
+        </div>
+        <div class="panel-body">
+            <form class="form-inline" ng-submit="createTodo()">
+                <div class="form-group">
+                    <input id="todoInputArea" type="text" class="form-control" placeholder="Pay phone bill"
+                           ng-model="formData.name"
+                           name="name">
+                </div>
+                <button id="submit" class="btn btn-primary" type="submit">Add</button>
+            </form>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <ul class="list-group">
+            <li class="list-group-item" ng-repeat="todo in todos track by $index" ng-if="todo.completed == 'false'">
+                    <span id="okIcon" class="glyphicon glyphicon-unchecked" ng-click="setCompleted(true,todo)"
+                          aria-hidden="true"></span>
+                {{todo.name}}
+                    <span id="deleteIcon" class="pull-right glyphicon glyphicon-trash" ng-click="deleteTodo(todo)"
+                          aria-hidden="true"></span>
+            </li>
+        </ul>
+
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a href="#">Completed Todos <span class="badge">{{(todos | filter:{completed:true}).length}}</span></a>
+        </div>
+
+        <ul class="list-group">
+            <li class="list-group-item" ng-repeat="todo in todos track by $index" ng-if="todo.completed == 'true'">
+                    <span id="okUndoIcon" class="glyphicon glyphicon-check" ng-click="setCompleted(false,todo)"
+                          aria-hidden="true"></span>
+                {{todo.name}}
+            </li>
+        </ul>
+
+    </div>
+
+</div>

@@ -4,7 +4,7 @@
   "description": "checkNode",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon serverNode.js"
   },
   "author": "",
   "license": "ISC",
