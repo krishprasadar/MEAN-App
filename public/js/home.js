@@ -1,5 +1,6 @@
 var angApp = angular.module('angApp', ['ngRoute']);
 
+//Page Routing - START//
 angApp.config(['$routeProvider', function ($routeProvider) {
 
     $routeProvider
@@ -20,7 +21,9 @@ angApp.config(['$routeProvider', function ($routeProvider) {
         });
 
 }]);
+//Page Routing - END//
 
+//App controller - START//
 angApp.controller('mainController', function ($scope, $http) {
     $scope.formData = {};
     $scope.config = {
@@ -29,11 +32,13 @@ angApp.controller('mainController', function ($scope, $http) {
         }
     };
 
+    //Initialize page
     $scope.initialize = function () {
         $.notify.defaults({className: "success"});
         $scope.getTodos();
     };
 
+    //Retreive Todos from database
     $scope.getTodos = function () {
         console.log("Getting Todos");
         $http.get('/app/getTodos')
@@ -47,22 +52,18 @@ angApp.controller('mainController', function ($scope, $http) {
 
     };
 
+    //Add Todo to database
     $scope.createTodo = function () {
         console.log($scope.formData.name);
 
         var filteredTodo = $scope.todos.filter(function (todo) {
             return todo.name == $scope.formData.name
         });
+
         if (filteredTodo.length > 0) {
             $("#todoInputArea").notify("Todo already exists", {position: "bottom", className: "info"});
             return;
         }
-
-        var config = {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        };
 
         var todo = $.param({
             name: $scope.formData.name,
@@ -71,7 +72,7 @@ angApp.controller('mainController', function ($scope, $http) {
 
         var create = $http.post('/app/addTodo', todo, $scope.config)
             .success(function (data) {
-                $scope.formData = {}; // clear the form so our user is ready to enter another
+                $scope.formData = {};
                 $('#submit').notify("Todo created", {position: "right"});
             })
             .error(function (data) {
@@ -82,15 +83,8 @@ angApp.controller('mainController', function ($scope, $http) {
 
     };
 
+    //Delete Todo from database
     $scope.deleteTodo = function (todo) {
-        console.log("To do ID :" + todo._id);
-        console.log("To do name:" + todo.name);
-
-        var config = {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        };
 
         var data = $.param({
             _id: todo._id
@@ -110,14 +104,8 @@ angApp.controller('mainController', function ($scope, $http) {
         del.then($scope.getTodos());
     };
 
-    //For both false and true
+    //Set Todo completed status
     $scope.setCompleted = function (isCompleted, todo) {
-
-        var config = {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        };
 
         var data = $.param({
             _id: todo._id,
@@ -139,3 +127,5 @@ angApp.controller('mainController', function ($scope, $http) {
     }
 
 });
+
+//App controller - END//

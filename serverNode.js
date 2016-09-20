@@ -9,6 +9,7 @@ app.use('/static', exp.static('public'));
 
 var db;
 
+//Configure MongoDB connection
 MongoClient.connect("mongodb://krishprasadar:mlabdb@ds033076.mlab.com:33076/kpsample", (err, database) => {
     if (err) return console.log(err);
     db = database;
@@ -18,6 +19,7 @@ MongoClient.connect("mongodb://krishprasadar:mlabdb@ds033076.mlab.com:33076/kpsa
     })
 });
 
+//Add Todo
 app.post('/app/addTodo', (req, res) => {
     db.collection('todos').insertOne(req.body, (err, result) => {
         if (err) return console.log(err)
@@ -34,6 +36,7 @@ app.post('/app/addTodo', (req, res) => {
     });
 });
 
+//Delete Todo
 app.post('/app/deleteTodo', (req, res) => {
     var del = {_id: mongodb.ObjectID(req.body._id)};
 
@@ -52,6 +55,7 @@ app.post('/app/deleteTodo', (req, res) => {
     })
 });
 
+//Retrieve Todo
 app.get('/app/getTodos', (req, res) => {
     db.collection('todos').find().toArray((err, result) => {
         if (err) return console.log(err)
@@ -60,6 +64,7 @@ app.get('/app/getTodos', (req, res) => {
     })
 });
 
+//Update Todo
 app.post('/app/updateTodo', (req, res) => {
     var query = {
         _id: mongodb.ObjectID(req.body._id)
@@ -82,8 +87,9 @@ app.post('/app/updateTodo', (req, res) => {
     })
 });
 
+//Render startup page
 app.get('*', (req, res) => {
-    res.sendFile(__dirname + '/index.html'); // load the single view file (angular will handle the page changes on the front-end)
+    res.sendFile(__dirname + '/index.html');
 });
 
 
